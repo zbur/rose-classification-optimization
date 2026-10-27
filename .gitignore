@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Data and generated outputs
+splits/
+runs/
+results/
+hpc_results/
+models/
+*.pt
+*.pth
+*.onnx
+
+# Cluster logs
+*.out
+*.err
