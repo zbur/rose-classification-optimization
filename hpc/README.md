@@ -1,29 +1,29 @@
-# 在 Explorer Cluster 上訓練
+# Training on the Explorer Cluster
 
-| 檔案 | 用途 |
+| File | Purpose |
 |---|---|
-| `config.sh` | 路徑、conda module、seeds、解析度（**先改這裡**） |
-| `setup_env.sh` | 一次性建立 conda 環境（login node） |
-| `prep.sbatch` | 資料切分（`short` CPU partition） |
-| `train.sbatch` | GPU job array，每個 task 跑一組 (seed, size) |
-| `experiments.sbatch` | 匯出 / 量化 / 評估 A–E，加上 seed 彙整（CPU） |
-| `submit_all.sh` | 依相依關係一次送出 prep → train → experiments |
+| `config.sh` | Paths, conda module, seeds, resolutions (**edit this first**) |
+| `setup_env.sh` | One-time conda environment setup (login node) |
+| `prep.sbatch` | Data split (`short` CPU partition) |
+| `train.sbatch` | GPU job array, one task per (seed, size) |
+| `experiments.sbatch` | Export / quantize / evaluate A–E, plus seed aggregation (CPU) |
+| `submit_all.sh` | Submit prep → train → experiments with dependencies |
 
-詳細步驟見上層對話或下方指令：
+Steps:
 
 ```bash
-# 本機：上傳程式與資料
+# Local: upload code and data
 rsync -av --exclude __pycache__ code/ <user>@login.explorer.northeastern.edu:~/mnv2/code/
 rsync -av /path/to/rose_data/ <user>@xfer.discovery.neu.edu:/scratch/<user>/rose_data/
 
-# 叢集
+# Cluster
 ssh <user>@login.explorer.northeastern.edu
 cd ~/mnv2/code
-module avail miniconda anaconda        # 確認 module 名稱，必要時修改 hpc/config.sh
+module avail miniconda anaconda        # check the module name; edit hpc/config.sh if needed
 bash hpc/setup_env.sh
-bash hpc/submit_all.sh                  # SUBSET=test bash hpc/submit_all.sh 做最後一次 test
+bash hpc/submit_all.sh                  # SUBSET=test bash hpc/submit_all.sh for the final test run
 squeue -u $USER
 
-# 本機：取回結果（/scratch 28 天會被清除）
+# Local: fetch results (/scratch is purged after 28 days)
 rsync -av <user>@xfer.discovery.neu.edu:/scratch/<user>/mnv2_runs/{runs,results} ./hpc_results/
 ```
